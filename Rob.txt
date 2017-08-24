@@ -1,0 +1,126 @@
+int ENA = 3;
+int ENB = 5;
+int IN1 = 7;
+int IN2 = 8;
+int IN3 = 6;
+int IN4 = 9;
+int c = 2;
+int l = 12;
+int r = 4;
+int lr;
+int rr;
+int cr;
+
+void setup() {
+ pinMode(ENA,OUTPUT);
+ pinMode(ENB,OUTPUT);
+ pinMode(IN1,OUTPUT);
+ pinMode(IN2,OUTPUT);
+ pinMode(IN3,OUTPUT);
+ pinMode(IN4,OUTPUT);
+ pinMode(c,INPUT);
+ pinMode(l,INPUT);
+ pinMode(r,INPUT);
+ digitalWrite(ENA,LOW);
+ digitalWrite(ENB,LOW);
+ digitalWrite(IN1,LOW);
+ digitalWrite(IN2,LOW);
+ digitalWrite(IN3,LOW);
+ digitalWrite(IN4,LOW);
+ Serial.begin(9600);
+}
+
+void frente(int velocidadeMotor1, int velocidadeMotor2){
+  digitalWrite(IN1,HIGH);
+  digitalWrite(IN2,LOW);
+  digitalWrite(IN3,HIGH);
+  digitalWrite(IN4,LOW);
+  analogWrite(ENA,velocidadeMotor1);
+  analogWrite(ENB,velocidadeMotor2);
+}
+
+void esquerda(int velocidadeMotor1, int velocidadeMotor2){
+  digitalWrite(IN1,HIGH);
+  digitalWrite(IN2,LOW);
+  digitalWrite(IN3,LOW);
+  digitalWrite(IN4,HIGH);
+  analogWrite(ENA,velocidadeMotor1);
+  analogWrite(ENB,velocidadeMotor2);
+}
+
+void direita(int velocidadeMotor1, int velocidadeMotor2){
+  digitalWrite(IN3,HIGH);
+  digitalWrite(IN4,LOW);
+  digitalWrite(IN1,LOW);
+  digitalWrite(IN2,HIGH);
+  analogWrite(ENA,velocidadeMotor1);
+  analogWrite(ENB,velocidadeMotor2);
+}
+void re(int velocidadeMotor1, int velocidadeMotor2){
+  digitalWrite(IN3,LOW);
+  digitalWrite(IN4,HIGH);
+  digitalWrite(IN1,LOW);
+  digitalWrite(IN2,HIGH);
+  analogWrite(ENA,velocidadeMotor1);
+  analogWrite(ENB,velocidadeMotor2);
+}
+void parar(){
+  digitalWrite(IN3,LOW);
+  digitalWrite(IN4,LOW);
+  digitalWrite(IN1,LOW);
+  digitalWrite(IN2,LOW);
+  analogWrite(ENA,0);
+  analogWrite(ENB,0);
+}
+
+void controle(int tempoReacao, int rotacaoMotor){
+  if((lr==HIGH) && (rr==HIGH) && (cr==LOW)){
+    frente(rotacaoMotor,rotacaoMotor);
+    Serial.println("frente"); 
+  }else if (cr==HIGH && lr==HIGH && (rr==LOW)){
+    direita(rotacaoMotor,rotacaoMotor);
+    Serial.println("direita");
+  }else if(cr==HIGH && rr==HIGH && (lr==LOW)){ 
+    esquerda(rotacaoMotor,rotacaoMotor);
+    Serial.println("esquerda");
+  }else{
+    parar();// talvez andar no ritmo lento
+  }
+  delay(tempoReacao);
+}
+
+void imprimirSensorIR(){
+  lr = digitalRead(l);
+  rr = digitalRead(r);
+  cr = digitalRead(c);
+}
+
+void loop() {
+
+ imprimirSensorIR();
+ controle(200,200);
+
+}
+
+
+
+  /*if(Serial.available() > 0){
+    Serial.println("entrou");
+    char cmd = Serial.read();
+    switch(cmd){
+      case 'w':
+        frente(255,255);
+         Serial.println("entrou2");
+      break;
+      case 'a':
+        esquerda(255,255);
+      break;
+      case 'd':
+        direita(255,255);
+      break;
+      case 's':
+        re(255,255);
+      break;
+      default:
+        parar();
+      }*/
