@@ -144,7 +144,7 @@ void definirTempo(){
 
 
 void loop() {
-
+  definirTempo();
   leitura();
   definirErro(200);
   control();
