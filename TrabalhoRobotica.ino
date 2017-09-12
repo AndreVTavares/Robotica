@@ -1,3 +1,4 @@
+
 int ENA = 3;
 int ENB = 5; 
 int IN1 = 7;
@@ -15,9 +16,9 @@ int leituraCentro;
 int erro = 0;
 int x,y;
 int constante = 120; //constante
-float kp = 4;
-float ki = 0.0001;//4
-float kd = 1;//2
+int kp = 4;
+float ki = 0.00001;//4
+int kd = 5;//2
 int dT = 0;
 long tempoFinal=0;
 long tempo = 0 ;
@@ -92,17 +93,18 @@ void parar(){
   analogWrite(ENB,0);
 }
 void limiteXY(){
-  if(x >= 255){
-    x = 200;
+  if(x >= 230){
+    x = 230;
   }
-  if(y >= 255){
-    y = 200;
+  if(y >= 230){
+    y = 230;
   }  
-  if(x < -255){
-    x = -200;
+
+  if(x < -230){
+    x = -230;
   }
-  if(y < -255){
-    y = -200;
+  if(y < -230){
+   y = -200;
   }
 }
 void control(){
