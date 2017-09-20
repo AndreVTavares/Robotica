@@ -1,3 +1,4 @@
+
 int ENA = 3;
 int ENB = 5; 
 int IN1 = 7;
@@ -14,15 +15,15 @@ int leituraDireita ;
 int leituraCentro;
 int erro = 0;
 int x,y;
-int constante = 120; //constante
-float kp = 4;
-float ki = 0.0001;//4
-float kd = 1;//2
+int constante = 120; //120constante
+float kp = 1.85;//1.85
+float ki = 0.0004;//0.0001
+int kd = 0;//2
 int dT = 0;
 long tempoFinal=0;
 long tempo = 0 ;
 int ultimaLeitura;
-int integral ; // armazena o valor do integrativo
+float integral ; // armazena o valor do integrativo
 
 void setup() {
  pinMode(ENA,OUTPUT);
@@ -61,7 +62,8 @@ void esquerda(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN4,HIGH);
   //velocidadeMotor1 = velocidadeMotor1 * 0.825;
   analogWrite(ENA,velocidadeMotor1);
-  analogWrite(ENB,velocidadeMotor2);
+  analogWrite(ENB,velocidadeMotor2+100);
+    
 }
 
 void direita(int velocidadeMotor1, int velocidadeMotor2){
@@ -69,10 +71,9 @@ void direita(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN4,LOW);
   digitalWrite(IN1,LOW);
   digitalWrite(IN2,HIGH);
-  analogWrite(ENA,velocidadeMotor1);
+  analogWrite(ENA,velocidadeMotor1+100);
   analogWrite(ENB,velocidadeMotor2);
-
-
+  
 }
 void re(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN3,LOW);
@@ -92,17 +93,18 @@ void parar(){
   analogWrite(ENB,0);
 }
 void limiteXY(){
-  if(x >= 255){
-    x = 200;
+  if(x >= 200){
+    x = 180;
   }
-  if(y >= 255){
-    y = 200;
+  if(y >= 200){
+    y = 180;
   }  
-  if(x < -255){
-    x = -200;
+
+  if(x < -180){
+    x = -180;
   }
-  if(y < -255){
-    y = -200;
+  if(y < -180){
+   y = -180;
   }
 }
 void control(){
@@ -120,13 +122,14 @@ void control(){
 }
 void definirErro(int setPoint){
   ultimaLeitura = v;
-  if((leituraEsquerda+leituraCentro+leituraDireita ) !=0){
+  if((leituraEsquerda+leituraCentro+leituraDireita ) !=0 ){
     v = (300*leituraEsquerda + 200*leituraCentro + 100*leituraDireita )/(leituraEsquerda+leituraCentro+leituraDireita );
-  }
+  
   erro =  setPoint - v;
   integral += (erro*dT*ki);
   x = constante + ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); // com kp igual a 5 o negativo no maximo chega 130 
   y = constante - ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); // so falta ajustar
+  }
 }
 
 void leitura(){
@@ -134,14 +137,29 @@ void leitura(){
   leituraDireita = digitalRead(sensorDireita);
   leituraCentro = digitalRead(sensorCentro);
 }
-
-
 void definirTempo(){
   tempo = tempoFinal;
   tempoFinal = millis();
   dT = (tempoFinal - tempo);
 }
 
+void inverter(){
+  if(leituraEsquerda == HIGH){
+    leituraEsquerda = LOW;
+  }else{
+    leituraEsquerda = HIGH;
+  }
+  if(leituraDireita == HIGH){
+    leituraDireita = LOW;
+  }else{
+    leituraDireita = HIGH;
+  }
+  if(leituraCentro == HIGH){
+    leituraCentro = LOW;
+  }else{
+    leituraCentro = HIGH;
+  }
+}
 
 void loop() {
   definirTempo();
