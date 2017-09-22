@@ -16,7 +16,7 @@ int leituraCentro;
 int erro = 0;
 int x,y;
 int constante = 87; //120constante
-float kp = 1.80;//1.8 // 1.77
+float kp = 1.77;//1.8 // 1.77
 float ki = 0.0007;//0.0007
 int kd = 0;//2
 int dT = 0;
@@ -61,7 +61,7 @@ void esquerda(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN4,HIGH);
   //velocidadeMotor1 = velocidadeMotor1 * 0.825;
   analogWrite(ENA,velocidadeMotor1);
-  analogWrite(ENB,velocidadeMotor2+70);//70 65
+  analogWrite(ENB,velocidadeMotor2+65);//70 65
     
 }
 
@@ -70,7 +70,7 @@ void direita(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN4,LOW);
   digitalWrite(IN1,LOW);
   digitalWrite(IN2,HIGH);
-  analogWrite(ENA,velocidadeMotor1+70);//
+  analogWrite(ENA,velocidadeMotor1+65);//
   analogWrite(ENB,velocidadeMotor2);
   
 }
