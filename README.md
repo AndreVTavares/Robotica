@@ -1,3 +1,3 @@
 # Robotica
 Cadeira de Robotica
-![Alt Text](https://im4.ezgif.com/tmp/ezgif-4-300d7c5859.gif)
+![Alt Text](https://i2.imgflip.com/1wcufq.gif)
