@@ -5,25 +5,37 @@ int IN1 = 7;
 int IN2 = 8;
 int IN3 = 6;
 int IN4 = 9;
-int sensorCentro = 2;
-int sensorEsquerda = 12;
-int sensorDireita = 4;
 
-int v = 0;
+int sensorCentroEsquerda = 12;
+int sensorCentroDireita = 11;
+int sensorEsquerda = 1;
+int sensorDireita = 10;
+
+
 int leituraEsquerda;
 int leituraDireita ;
-int leituraCentro;
-int erro = 0;
-int x,y;
-int constante = 87; //120constante
-float kp = 1.80;//1.8 // 1.77
-float ki = 0.0007;//0.0007
-int kd = 0;//2
-int dT = 0;
+int leituraCentroEsquerda;
+int leituraCentroDireita;
+
+double erro = 0;
+double input = 0;
+double errSum, ultimoErro,dInput, kp, ki, kd;
+double dT = 0;
 long tempoFinal=0;
 long tempo = 0 ;
-int ultimaLeitura;
-float integral ; // armazena o valor do integrativo
+double ultimaLeitura;
+
+int x,y;
+int constante = 87; //120constante
+
+/*double kp = 1.80;//1.8 // 1.77
+double ki = 0.0007;//0.0007
+double kd = 0;//2*/
+
+
+
+
+//float integral ; // armazena o valor do integrativo
 
 void setup() {
  pinMode(ENA,OUTPUT);
@@ -32,9 +44,11 @@ void setup() {
  pinMode(IN2,OUTPUT);
  pinMode(IN3,OUTPUT);
  pinMode(IN4,OUTPUT);
- pinMode(sensorCentro,INPUT);
+ pinMode(sensorCentroDireita,INPUT);
+ pinMode(sensorCentroEsquerda,INPUT);
  pinMode(sensorEsquerda,INPUT);
  pinMode(sensorDireita,INPUT);
+ 
  digitalWrite(ENA,LOW);
  digitalWrite(ENB,LOW);
  digitalWrite(IN1,LOW);
@@ -119,7 +133,7 @@ void control(){
     esquerda(x,-y);
   }
 }
-void definirErro(int setPoint){
+/*void definirErro(int setPoint){
   ultimaLeitura = v;
   if((leituraEsquerda+leituraCentro+leituraDireita ) !=0 && (leituraEsquerda+leituraCentro+leituraDireita ) !=3){
     v = (300*leituraEsquerda + 200*leituraCentro + 100*leituraDireita )/(leituraEsquerda+leituraCentro+leituraDireita );
@@ -129,20 +143,52 @@ void definirErro(int setPoint){
   x = constante + ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); // com kp igual a 5 o negativo no maximo chega 130 
   y = constante - ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); // so falta ajustar
   }
+}*/
+
+
+int amostra = 1000; //1 sec
+void definirErro(double setpoint){
+  definirTempo();
+  if(dT>=amostra){
+    input = (100*leituraEsquerda + 250*leituraCentroDireita + 250*leituraCentroEsquerda + 100*leituraDireita);
+    erro = setpoint - input;
+    errSum += (erro);//* dT);
+    dInput = (input - ultimaLeitura );//- ultimoErro) / dT;
+    x = constante + (kp * erro + ki * errSum - kd * dInput);
+    y = constante - (kp * erro + ki * errSum -   kd * dInput);
+    ultimoErro = erro;
+    ultimaLeitura = input;
+  }
+}
+void SetTunings(double Kp, double Ki, double Kd){
+    double amostraEmSeg = ((double)amostra)/1000;
+    kp = Kp;
+    ki = Ki * amostraEmSeg;
+    kd = Kd / amostraEmSeg;
+}
+
+void SetAmostra(int novaAmostra){
+  if (novaAmostra > 0){
+    double ratio = (double)novaAmostra / (double)amostra;
+    ki *= ratio;
+    kd /= ratio;
+    amostra = (unsigned long)novaAmostra;
+  }
 }
 
 void leitura(){
   leituraEsquerda = digitalRead(sensorEsquerda);
   leituraDireita = digitalRead(sensorDireita);
-  leituraCentro = digitalRead(sensorCentro);
+  leituraCentroDireita = digitalRead(sensorCentroDireita);
+  leituraCentroEsquerda = digitalRead(sensorCentroEsquerda);
 }
 void definirTempo(){
   tempo = tempoFinal;
   tempoFinal = millis();
-  dT = (tempoFinal - tempo);
+  dT = (double)(tempoFinal - tempo);
 }
 
-void inverter(){
+/*void inverter(){
   if(leituraEsquerda == HIGH){
     leituraEsquerda = LOW;
   }else{
@@ -158,12 +204,11 @@ void inverter(){
   }else{
     leituraCentro = HIGH;
   }
-}
+}*/
 
 void loop() {
-  definirTempo();
   leitura();
-  definirErro(200);
+  definirErro(0);
   control();
   
 
