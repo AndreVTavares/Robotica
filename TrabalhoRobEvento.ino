@@ -26,7 +26,7 @@ long tempo = 0 ;
 double ultimaLeitura;
 
 int x,y;
-int constante = 87; //120constante
+int constante = 150; //120constante
 
 /*double kp = 1.80;//1.8 // 1.77
 double ki = 0.0007;//0.0007
@@ -87,11 +87,11 @@ void parar(){
   analogWrite(ENB,0);
 }
 void limiteXY(){
-  if(x >= 200){
-    x = 180;
+  if(x >= 230){
+    x = 230;
   }
-  if(y >= 200){
-    y = 180;
+  if(y >= 230){
+    y = 230;
   }  
 
   if(x < -180){
@@ -130,15 +130,18 @@ void control(){
 int amostra = 1000; //1 sec
 void definirErro(double setpoint){
   definirTempo();
+  //Serial.println(dT);
   if(dT>=amostra){
     input = (100*leituraEsquerda + 250*leituraCentroDireita + 250*leituraCentroEsquerda + 100*leituraDireita);
     erro = setpoint - input;
     errSum += (erro);//* dT);
     dInput = (input - ultimaLeitura );//- ultimoErro) / dT;
+    //Serial.println();
     x = constante + (kp * erro + ki * errSum - kd * dInput);
     y = constante - (kp * erro + ki * errSum -   kd * dInput);
     ultimoErro = erro;
     ultimaLeitura = input;
+    dT = 0;
   }
 }
 void setTunings(double Kp, double Ki, double Kd){
@@ -166,7 +169,7 @@ void leitura(){
 void definirTempo(){
   tempo = tempoFinal;
   tempoFinal = millis();
-  dT = (double)(tempoFinal - tempo);
+  dT += (double)(tempoFinal - tempo);
 }
 
 /*void inverter(){
