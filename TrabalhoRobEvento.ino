@@ -1,10 +1,10 @@
 
 int ENA = 3;
 int ENB = 5; 
-int IN1 = 7;
-int IN2 = 8;
-int IN3 = 6;
-int IN4 = 9;
+int IN1 = 8;
+int IN2 = 7;
+int IN3 = 9;
+int IN4 = 6;
 
 int sensorCentroEsquerda = 12;
 int sensorCentroDireita = 11;
@@ -132,7 +132,7 @@ void definirErro(double setpoint){
   definirTempo();
   //Serial.println(dT);
   if(dT>=amostra){
-    input = (100*leituraEsquerda + 250*leituraCentroDireita + 250*leituraCentroEsquerda + 100*leituraDireita);
+    input = (150*leituraEsquerda + 250*leituraCentroDireita + 250*leituraCentroEsquerda + 150*leituraDireita);
     erro = setpoint - input;
     errSum += (erro);//* dT);
     dInput = (input - ultimaLeitura );//- ultimoErro) / dT;
