@@ -1,17 +1,6 @@
 # Robotica
 Seguidor de trilha utilizando Arduino
 
-# 1. Introdução
- <br />
-  <p align="center">
-  <img src="https://i2.imgflip.com/1wcufq.gif"><br/>
-  <b>Figura do Carro</b>
-  </p>
-                                          
-
- # ControleDigital
-Projeto seguidor de Parede.<br />
-
 # Colaboradores : 
 
   -<a href="https://github.com/rodrigopaullo">Rodrigo Paulo 1121227/1</a><br />
@@ -85,8 +74,8 @@ void definirErro(int setPoint){
 ```
 # 3.1  Fase de testes.
 <p align="justify">
-	As dificuldade encontradas no projeto foram diversas, a primeira foi a rotação dos motores que não giravam na mesma rotação fazendo que não fossem em uma reta com a mesma constante , após a correção outro problema apareceu , as baterias quando começavam a descarregar, consequentemente a velocidade e as possíveis correções elaboradas anteriormente não funcionavam corretamente , precisando de novos ajustes, com isso mais tempo era gasto , recomendável é usar uma fonte que possa fornecer uma potência constante com isso os ajustes se manteriam , ondulações e a iluminação (fluorescente) é um problema para o carro continuar seu percurso, um exemplo disso foi quando utilizado uma lona que continha algumas ondulações o carro tinha que fazer correções no trajeto constantemente para se manter, por mais que a ondulação seja pequena. Em relação as pistas e suas calibrações, a pista do formato U e S não foi preciso usar a constante Kd (derivativo), sendo a correção do trajeto feito pelo ki e kp, em relação ao valor atribuído, a pista S teve valor um pouco menor em kp e no offset em comparação com U, pois as curvas da pista S era menos fechada, na pista H foi necessário adicionar o Kd, pois as curvas eram mais fechadas que as outras fazendo que o carro saísse da pista.
-	</p>
+	As dificuldade encontradas no projeto foram diversas, a primeira foi a rotação dos motores que não giravam na mesma rotação fazendo que não fossem em uma reta com a mesma constante , após a correção outro problema apareceu , as baterias quando começavam a descarregar, consequentemente a velocidade e as possíveis correções elaboradas anteriormente não funcionavam corretamente , precisando de novos ajustes, com isso mais tempo era gasto , recomendável é usar uma fonte que possa fornecer uma potência constante com isso os ajustes se manteriam , ondulações e a iluminação (fluorescente) é um problema para o carro continuar seu percurso, um exemplo disso foi quando utilizado uma lona que continha algumas ondulações o carro tinha que fazer correções no trajeto constantemente para se manter, por mais que a ondulação seja pequena. Em relação as pistas e suas calibrações, a pista do formato U e S não foi preciso usar a constante Kd (derivativo), sendo a correção do trajeto feito pelo ki e kp, em relação ao valor atribuído, a pista S teve valor um pouco menor em kp e no offset em comparação com U, pois as curvas da pista S era menos fechada, na pista H foi necessário adicionar o Kd, pois as curvas eram mais fechadas que as outras fazendo que o carro saísse da pista.</p>
+	
 # 4.	Conclusão.
   <p align="justify">
   Aplicações desse tipo de projeto são bem difíceis de serem realizadas, já que a funcionalidade do robô seguidor de linha é seguir o trajeto demarcado enquanto se locomove para frente. Nas pesquisas encontradas poderá ser usado para rotinas repetitivas, como por exemplo, ir de um ponto a outro do ambiente transportando materiais, ou ainda, através do código implementado, realizar alguma tarefa durante o trajeto. Na atualidade existem algumas empresas que trabalham com robôs que fazem trajetórias pré-estabelecidas e autônomas. A Amazon usa os robôs para separar os produtos no estoque, a STO Express usa os robôs para separar as correspondências por localização. Dessa maneira é possível notar uma pequena quantidade de empresas que trabalham com essa tecnologia. Resumindo, foi um projeto muito desafiador, tivemos trabalho em achar os valores do controle PID no programa, cada pista teve seu valor escolhido. Erramos muitas vezes, mas conseguimos atingir o nosso objetivo. O nosso robô cumpriu com os objetivos estabelecidos.</p>
