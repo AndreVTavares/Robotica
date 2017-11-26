@@ -49,7 +49,6 @@ void frente(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,HIGH);
   digitalWrite(IN4,LOW);
-  //velocidadeMotor1 = velocidadeMotor1 * 0.825;
   analogWrite(ENA,velocidadeMotor1);
   analogWrite(ENB,velocidadeMotor2);
 }
@@ -59,7 +58,6 @@ void esquerda(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,HIGH);
-  //velocidadeMotor1 = velocidadeMotor1 * 0.825;
   analogWrite(ENA,velocidadeMotor1);
   analogWrite(ENB,velocidadeMotor2+75);//70 65
     
@@ -79,7 +77,6 @@ void re(int velocidadeMotor1, int velocidadeMotor2){
   digitalWrite(IN4,HIGH);
   digitalWrite(IN1,LOW);
   digitalWrite(IN2,HIGH);
-  //velocidadeMotor1 = velocidadeMotor1 * 0.825;
   analogWrite(ENA,velocidadeMotor1);
   analogWrite(ENB,velocidadeMotor2);
 }
@@ -110,12 +107,9 @@ void control(){
   limiteXY();
   if(x >= 0 && y>= 0){
     frente(x,y); 
-    //Serial.println("frente");  
   }else if (x < 0 && y> 0){
-    //Serial.println("direita"); 
     direita(-x,y);
   }else if(x > 0 && y< 0){
-    //Serial.println("esquerda"); 
     esquerda(x,-y);
   }
 }
@@ -126,8 +120,8 @@ void definirErro(int setPoint){
   
   erro =  setPoint - v;
   integral += (erro*dT*ki);
-  x = constante + ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); // com kp igual a 5 o negativo no maximo chega 130 
-  y = constante - ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); // so falta ajustar
+  x = constante + ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral);  
+  y = constante - ((erro*kp) + (kd*(v - ultimaLeitura)/dT) + integral); 
   }
 }
 
@@ -165,6 +159,4 @@ void loop() {
   leitura();
   definirErro(200);
   control();
-  
-
 }
