@@ -57,6 +57,66 @@ Seguidor de trilha utilizando Arduino
 
 # 3.   Implemetação
 # 3.1  Funcionamento
+<p align="justify">
+  Definindo as variáveis de controle do projeto(Portas do arduino), para ponte H e os três sensores infravermelho.</p>
+   
+   ```
+	int ENA = 3;
+	int ENB = 5;
+	int IN1 = 7;
+	int IN2 = 8;
+	int IN3 = 6;
+	int IN4 = 9;
+	int sensorCentro = 2;
+	int sensorEsquerda = 12;
+	int sensorDireita = 4;
+   ```
+    
+  <p align="justify"> 
+  Na função setup() são configurados os pinos utilizados na placa Arduino, essa configuração serve para determinar o funcionamento de cada um deles, como por exemplo os pinos da ponte H que estão configurados para saída, enquanto que, sensores infravermelho estão funcionando como entrada. Logo em seguida são determinados os valores da saída dos pinos da ponte H que irão controlar a velocidade e o sentido da rotação de cada um dos motores, nesse momento estão tudo em low para evitar qualquer problema futuro.</p>
+  
+```
+ void setup( ) {
+   pinMode(trigFrontal,OUTPUT);
+   pinMode(echoFrontal,INPUT);
+   pinMode(trigLateral,OUTPUT);
+   pinMode(echoLateral,INPUT);
+   digitalWrite(trigFrontal,LOW);
+   digitalWrite(trigLateral,LOW);
+   rodaEsquerda.attach(5);
+   delay(1);
+   rodaDireita.attach(6);
+   rodaEsquerda.write(90);
+   rodaDireita.write(90);
+}
+```
+ <p align="justify">
+Aqui estão declaradas as variáveis utilizadas no cálculo do controlador PID e as que armazenam os valores durante a execução das medições e as constantes iniciais. Lembrando que para cada pista foi usado um kp, ki e kd diferente, caso precisasse mudar de fonte a constante deveria ser modificado levando em conta a potência da mesma. Esse caso é o da pista U.</p>
+
+```
+	int v = 0;
+	int erro = 0;
+	int x,y;
+	int constante = 120; //120constante
+	float kp = 1.80;//1.75
+	float ki = 0.0007;//0.0006
+	int kd = 0;//2
+	int dT = 0;
+	long tempoFinal=0;
+	long tempo = 0 ;
+	int ultimaLeitura;
+	float integral ; // armazena o valor do integrativo
+```
+  <p align="justify">
+A função leitura apenas pega os valores dos sensores usando as portas selecionadas anteriormente e armazena em três variáveis para posteriormente ser usado no definirErro.</p>
+
+```
+	void leitura(){
+		leituraEsquerda = digitalRead(sensorEsquerda);
+		leituraDireita = digitalRead(sensorDireita);
+		leituraCentro = digitalRead(sensorCentro);
+	}
+```
   <p align="justify">
   A função definirErro(int setPoint) calcula o erro através da diferença entre o setPoint e o cálculo da função V que utiliza os dados do sensores infravermelho do carro, caso o sensor da esquerda entre na rota, o controlador irá calcular esse erro e estabelecer um valor para x e y para que o carro permaneça sempre na trilha. Lembrando que o i é acumulativo logo se ficar muito tempo fora da rota esse valor vai ser grande suficiente para causar imprecisão por isso o carro deve ser ligado próximo a trilha.</p>
 
@@ -72,11 +132,40 @@ void definirErro(int setPoint){
 	}
 }
 ```
+<p align="justify">
+  Como precisamos definir qual função deve ser chamada para continuar na rota a partir do valor de X e Y foi criado a função controle() , nela é chamado uma função para definir uma rotação máxima dos motores(velocidade), após isso é criado três condições que vai definir a função de direção , a primeira é caso X e Y sejam iguais ou maiores que zero, será chamado a função de frente , caso o X seja maior que zero e Y menor que zero será chamado a função que movimenta o carro pra esquerda, a última e quando X é menor que zero e Y maior que zero , o carro irá na direção da direita.</p>
+  
+```
+	void limiteXY(){
+		if(x >= 200){
+			x = 180;
+		}
+		if(y >= 200){
+			y = 180;
+		}
+		if(x < -180){
+			x = -180;
+		}
+		if(y < -180){
+			y = -180;
+		}
+	}
+	void control(){
+		limiteXY();
+		if(x >= 0 && y>= 0){
+			frente(x,y);
+		}else if (x < 0 && y> 0){
+			direita(-x,y);
+		}else if(x > 0 && y< 0){
+			esquerda(x,-y);
+		}
+	}
+```
 # 3.1  Fase de testes.
 <p align="justify">
 	As dificuldade encontradas no projeto foram diversas, a primeira foi a rotação dos motores que não giravam na mesma rotação fazendo que não fossem em uma reta com a mesma constante , após a correção outro problema apareceu , as baterias quando começavam a descarregar, consequentemente a velocidade e as possíveis correções elaboradas anteriormente não funcionavam corretamente , precisando de novos ajustes, com isso mais tempo era gasto , recomendável é usar uma fonte que possa fornecer uma potência constante com isso os ajustes se manteriam , ondulações e a iluminação (fluorescente) é um problema para o carro continuar seu percurso, um exemplo disso foi quando utilizado uma lona que continha algumas ondulações o carro tinha que fazer correções no trajeto constantemente para se manter, por mais que a ondulação seja pequena. Em relação as pistas e suas calibrações, a pista do formato U e S não foi preciso usar a constante Kd (derivativo), sendo a correção do trajeto feito pelo ki e kp, em relação ao valor atribuído, a pista S teve valor um pouco menor em kp e no offset em comparação com U, pois as curvas da pista S era menos fechada, na pista H foi necessário adicionar o Kd, pois as curvas eram mais fechadas que as outras fazendo que o carro saísse da pista.</p>
 	
-# 4.	Conclusão.
+# 4.	Aplicações para o projeto.
   <p align="justify">
   Aplicações desse tipo de projeto são bem difíceis de serem realizadas, já que a funcionalidade do robô seguidor de linha é seguir o trajeto demarcado enquanto se locomove para frente. Nas pesquisas encontradas poderá ser usado para rotinas repetitivas, como por exemplo, ir de um ponto a outro do ambiente transportando materiais, ou ainda, através do código implementado, realizar alguma tarefa durante o trajeto. Na atualidade existem algumas empresas que trabalham com robôs que fazem trajetórias pré-estabelecidas e autônomas. A Amazon usa os robôs para separar os produtos no estoque, a STO Express usa os robôs para separar as correspondências por localização. Dessa maneira é possível notar uma pequena quantidade de empresas que trabalham com essa tecnologia. Resumindo, foi um projeto muito desafiador, tivemos trabalho em achar os valores do controle PID no programa, cada pista teve seu valor escolhido. Erramos muitas vezes, mas conseguimos atingir o nosso objetivo. O nosso robô cumpriu com os objetivos estabelecidos.</p>
 
